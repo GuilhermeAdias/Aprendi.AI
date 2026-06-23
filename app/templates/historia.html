@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}História da IA — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">📜</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">A História da Inteligência Artificial</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Uma viagem no tempo para entender como a IA surgiu e chegou até o seu celular.
+    </p>
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-4 py-12">
+  <ol class="relative border-l-4 border-marca-roxoclaro/40 ml-4 space-y-8">
+    {% for evento in timeline %}
+    <li class="ml-6">
+      <span class="absolute -left-5 flex items-center justify-center w-10 h-10 bg-white border-4 border-marca-roxoclaro rounded-full text-xl shadow">
+        {{ evento.icone }}
+      </span>
+      <div class="bg-white rounded-2xl shadow-md p-5 border border-slate-100">
+        <span class="inline-block bg-marca-azul/10 text-marca-azul font-bold text-sm px-3 py-1 rounded-full mb-2">
+          {{ evento.ano }}
+        </span>
+        <h2 class="font-extrabold text-lg text-slate-800 mb-1">{{ evento.titulo }}</h2>
+        <p class="text-slate-600 text-sm leading-relaxed">{{ evento.texto }}</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <div class="text-center mt-10">
+    <a href="/como-funciona"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Próximo: Como a IA funciona ⚙️
+    </a>
+  </div>
+</div>
+{% endblock %}

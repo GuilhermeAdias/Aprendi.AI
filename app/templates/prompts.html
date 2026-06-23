@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Guia de Prompts — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">✍️</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Guia de Prompts</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Prompt é o pedido que você faz para a IA. Aprenda a montar pedidos claros e receba respostas muito melhores!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-4 py-12">
+  <!-- Ingredientes -->
+  <h2 class="text-2xl font-extrabold text-center text-slate-800 mb-2">Os 6 ingredientes de um bom prompt 🧪</h2>
+  <p class="text-center text-slate-500 mb-8">Não precisa usar todos sempre, mas quanto mais, melhor a resposta!</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+    {% for ing in ingredients %}
+    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+      <div class="text-3xl mb-2">{{ ing.icone }}</div>
+      <h3 class="font-extrabold text-lg text-marca-roxo mb-1">{{ ing.nome }}</h3>
+      <p class="text-slate-600 text-sm">{{ ing.texto }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Exemplos ruim vs bom -->
+  <h2 class="text-2xl font-extrabold text-center text-slate-800 mb-8">Antes e depois 🔁</h2>
+  <div class="space-y-6">
+    {% for ex in examples %}
+    <div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        <div class="p-5 bg-red-50 border-b md:border-b-0 md:border-r border-slate-100">
+          <div class="flex items-center gap-2 font-bold text-red-600 mb-2">
+            <span>❌</span> Prompt fraco
+          </div>
+          <p class="text-slate-700 italic">"{{ ex.ruim }}"</p>
+        </div>
+        <div class="p-5 bg-green-50">
+          <div class="flex items-center gap-2 font-bold text-green-700 mb-2">
+            <span>✅</span> Prompt melhorado
+          </div>
+          <p class="text-slate-700">"{{ ex.bom }}"</p>
+        </div>
+      </div>
+      <div class="px-5 py-3 bg-marca-azul/5 text-sm text-marca-azul">
+        💡 <strong>Por quê?</strong> {{ ex.porque }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-10">
+    <a href="/laboratorio"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Agora teste o seu prompt no Laboratório 🧪
+    </a>
+  </div>
+</div>
+{% endblock %}

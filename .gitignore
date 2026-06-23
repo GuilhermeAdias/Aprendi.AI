@@ -4,6 +4,14 @@
 # Dependências
 node_modules/
 
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
 # Variáveis de ambiente
 .env
 .env.local

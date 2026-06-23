@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Página não encontrada — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-20 text-center">
+  <div class="text-7xl mb-4">🤖❓</div>
+  <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Ops! Página não encontrada</h1>
+  <p class="text-slate-500 mb-8">
+    A IA procurou por todo lado, mas não achou esta página. Que tal voltar para um lugar conhecido?
+  </p>
+  <a href="/"
+     class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+    🏠 Voltar para o início
+  </a>
+</div>
+{% endblock %}

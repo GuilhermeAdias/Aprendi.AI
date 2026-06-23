@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Como a IA funciona — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">⚙️</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Como a IA funciona?</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Vamos descobrir, com exemplos simples, o que acontece "por dentro" da Inteligência Artificial.
+    </p>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto px-4 py-12 space-y-6">
+  {% set conceitos = [
+    {
+      "icone": "🔍",
+      "titulo": "A IA aprende padrões",
+      "texto": "Imagine mostrar 1000 fotos de gatos para alguém. Depois de tantas fotos, a pessoa reconhece um gato novo na hora. A IA faz parecido: ela vê muitos exemplos e descobre os padrões que se repetem.",
+      "analogia": "É como aprender a reconhecer a letra de um amigo depois de ver vários bilhetes dele."
+    },
+    {
+      "icone": "🧠",
+      "titulo": "A IA não pensa como humanos",
+      "texto": "A IA não tem ideias, sentimentos ou consciência. Ela faz cálculos com números para adivinhar a resposta mais provável. Parece que pensa, mas é matemática trabalhando muito rápido!",
+      "analogia": "É como uma calculadora gigante que tenta adivinhar a próxima palavra de uma frase."
+    },
+    {
+      "icone": "⚠️",
+      "titulo": "A IA pode errar",
+      "texto": "Como a IA trabalha com probabilidades, às vezes ela acerta e às vezes erra — e pode até inventar informações que parecem verdadeiras. Por isso devemos sempre conferir o que ela diz.",
+      "analogia": "É como um chute muito bem informado: geralmente acerta, mas não é garantido."
+    },
+    {
+      "icone": "📚",
+      "titulo": "A IA precisa de dados",
+      "texto": "Sem exemplos, a IA não aprende nada. Quanto mais dados bons ela recebe, melhor ela fica. Se os dados forem ruins ou injustos, a IA também pode aprender coisas erradas.",
+      "analogia": "É como cozinhar: com bons ingredientes, sai um bom prato. Com ingredientes ruins, não tem milagre."
+    }
+  ] %}
+
+  {% for c in conceitos %}
+  <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100 flex gap-4 items-start">
+    <div class="text-4xl shrink-0">{{ c.icone }}</div>
+    <div>
+      <h2 class="font-extrabold text-xl text-slate-800 mb-1">{{ c.titulo }}</h2>
+      <p class="text-slate-600 leading-relaxed mb-3">{{ c.texto }}</p>
+      <p class="text-sm bg-marca-azul/5 text-marca-azul rounded-xl px-4 py-2">
+        💡 <strong>Analogia:</strong> {{ c.analogia }}
+      </p>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="text-center mt-4">
+    <a href="/dia-a-dia"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Próximo: IA no dia a dia 🌍
+    </a>
+  </div>
+</div>
+{% endblock %}
