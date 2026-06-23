@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Real ou IA? — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azulclaro to-marca-azul text-white">
+  <div class="max-w-4xl mx-auto px-4 py-10 text-center">
+    <div class="text-5xl mb-3">🕵️</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Real ou IA?</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Leia cada situação e adivinhe: foi feito por um <strong>humano</strong> ou por uma <strong>IA</strong>?
+    </p>
+  </div>
+</section>
+
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <!-- HUD -->
+  <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-4 mb-6">
+    <div class="flex items-center justify-between text-sm font-bold text-slate-600 mb-2">
+      <span id="ra-progress">Item 1</span>
+      <span class="text-marca-azul">✅ <span id="ra-acertos">0</span> acertos • ⚡ <span id="ra-xp">0</span> XP</span>
+    </div>
+    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+      <div id="ra-bar" class="h-3 bg-gradient-to-r from-marca-azulclaro to-marca-azul rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div id="ra-card" class="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+    <div class="bg-slate-50 rounded-xl p-5 mb-5 text-center">
+      <span class="text-3xl">🔎</span>
+      <p id="ra-conteudo" class="text-slate-700 font-semibold mt-2"></p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <button id="ra-humano-btn"
+        class="ra-choice flex flex-col items-center gap-1 p-4 rounded-xl border-2 border-slate-200 hover:border-marca-azul hover:bg-blue-50 transition-colors font-bold text-slate-700">
+        <span class="text-3xl">👤</span> Humano
+      </button>
+      <button id="ra-ia-btn"
+        class="ra-choice flex flex-col items-center gap-1 p-4 rounded-xl border-2 border-slate-200 hover:border-marca-roxo hover:bg-purple-50 transition-colors font-bold text-slate-700">
+        <span class="text-3xl">🤖</span> IA
+      </button>
+    </div>
+
+    <div id="ra-feedback" class="hidden mt-5 rounded-xl p-4 text-sm"></div>
+    <button id="ra-next-btn"
+      class="hidden mt-5 w-full bg-marca-azul text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">
+      Próximo ➡️
+    </button>
+  </div>
+
+  <!-- Final -->
+  <div id="ra-final" class="hidden bg-white rounded-2xl shadow-md border border-slate-100 p-8 text-center">
+    <div class="text-6xl mb-3" id="ra-final-emoji">🕵️</div>
+    <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Investigação concluída!</h2>
+    <div class="text-4xl font-extrabold text-marca-azul my-3"><span id="ra-final-correct">0</span>/<span id="ra-final-total">0</span></div>
+    <p class="text-slate-600 mb-6" id="ra-final-msg"></p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <button id="ra-restart" class="bg-slate-100 text-slate-700 font-bold px-6 py-3 rounded-full hover:bg-slate-200 transition-colors">🔁 Jogar de novo</button>
+      <a href="/games" class="bg-marca-azul text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">Outros games 🎮</a>
+    </div>
+  </div>
+</div>
+
+<script id="ra-data" type="application/json">{{ itens | tojson }}</script>
+<script>window.RA_XP = {{ xp_por_acerto }};</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/real_ou_ia.js"></script>
+{% endblock %}

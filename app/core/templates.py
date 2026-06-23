@@ -16,6 +16,7 @@ templates.env.globals["app_name"] = "Aprendi.AI"
 templates.env.globals["slogan"] = (
     "Aprenda Inteligência Artificial brincando, explorando e criando bons prompts."
 )
+templates.env.globals["github_url"] = "https://github.com/GuilhermeAdias/Aprendi.AI"
 
 # Itens de navegação reutilizados pelo cabeçalho e pelos cards da home.
 NAV_ITEMS = [
@@ -29,8 +30,8 @@ NAV_ITEMS = [
      "descricao": "Aprenda a escrever pedidos incríveis para a IA."},
     {"href": "/laboratorio", "titulo": "Laboratório", "icone": "🧪",
      "descricao": "Teste seu prompt e receba uma nota na hora."},
-    {"href": "/jogo", "titulo": "Jogo dos Prompts", "icone": "🎮",
-     "descricao": "Cumpra missões e ganhe XP escolhendo bons prompts."},
+    {"href": "/games", "titulo": "Games", "icone": "🎮",
+     "descricao": "3 jogos para aprender IA se divertindo."},
     {"href": "/quiz", "titulo": "Quiz", "icone": "❓",
      "descricao": "Teste o que você aprendeu sobre IA."},
     {"href": "/seguranca", "titulo": "Segurança", "icone": "🛡️",

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Monte o Prompt — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-roxo to-marca-roxoclaro text-white">
+  <div class="max-w-4xl mx-auto px-4 py-10 text-center">
+    <div class="text-5xl mb-3">🧩</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Monte o Prompt</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Escolha o melhor bloco em cada categoria e monte um prompt incrível!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <!-- HUD -->
+  <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-4 mb-6">
+    <div class="flex items-center justify-between text-sm font-bold text-slate-600 mb-2">
+      <span id="mp-progress">Desafio 1</span>
+      <span class="text-marca-roxo">⚡ <span id="mp-xp">0</span> XP</span>
+    </div>
+    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+      <div id="mp-bar" class="h-3 bg-gradient-to-r from-marca-roxo to-marca-roxoclaro rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Desafio -->
+  <div id="mp-card" class="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+    <div class="bg-marca-roxo/5 rounded-xl p-4 mb-5">
+      <span class="font-bold text-marca-roxo">🎯 Cenário:</span>
+      <span id="mp-cenario" class="text-slate-700"></span>
+    </div>
+    <div id="mp-categorias" class="space-y-5"></div>
+
+    <button id="mp-montar-btn" disabled
+      class="mt-6 w-full bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform">
+      🧩 Montar o prompt!
+    </button>
+
+    <!-- Resultado do desafio -->
+    <div id="mp-resultado" class="hidden mt-6">
+      <h3 class="font-extrabold text-slate-800 mb-2">Seu prompt ficou assim:</h3>
+      <p id="mp-prompt-final" class="bg-marca-azul/5 text-slate-700 rounded-xl p-4 text-sm mb-3"></p>
+      <p id="mp-feedback" class="text-sm font-semibold mb-4"></p>
+      <button id="mp-next-btn"
+        class="w-full bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">
+        Próximo desafio ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- Final -->
+  <div id="mp-final" class="hidden bg-white rounded-2xl shadow-md border border-slate-100 p-8 text-center">
+    <div class="text-6xl mb-3">🎉</div>
+    <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Você é um construtor de prompts!</h2>
+    <div class="text-4xl font-extrabold text-marca-roxo my-3"><span id="mp-final-xp">0</span> XP</div>
+    <p class="text-slate-600 mb-6" id="mp-final-msg"></p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <button id="mp-restart" class="bg-slate-100 text-slate-700 font-bold px-6 py-3 rounded-full hover:bg-slate-200 transition-colors">🔁 Jogar de novo</button>
+      <a href="/games" class="bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">Outros games 🎮</a>
+    </div>
+  </div>
+</div>
+
+<script id="mp-data" type="application/json">{{ desafios | tojson }}</script>
+<script>window.MP_XP = {{ xp_por_acerto }};</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/montar_prompt.js"></script>
+{% endblock %}
