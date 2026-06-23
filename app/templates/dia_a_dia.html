@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}IA no dia a dia — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">🌍</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">IA no seu dia a dia</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Você usa Inteligência Artificial muito mais do que imagina! Veja onde ela está escondida.
+    </p>
+  </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for ex in examples %}
+    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all">
+      <div class="text-4xl mb-3">{{ ex.icone }}</div>
+      <h2 class="font-extrabold text-lg text-slate-800 mb-1">{{ ex.titulo }}</h2>
+      <p class="text-slate-600 text-sm leading-relaxed">{{ ex.texto }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-10">
+    <a href="/prompts"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Próximo: Aprenda a criar prompts ✍️
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <meta name="description" content="{{ slogan }}" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            marca: {
+              azul: "#2563eb",
+              azulclaro: "#3b82f6",
+              roxo: "#7c3aed",
+              roxoclaro: "#a855f7",
+            },
+          },
+          fontFamily: {
+            sans: ["Nunito", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"
+  />
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
+  <!-- Cabeçalho -->
+  <header class="bg-gradient-to-r from-marca-azul to-marca-roxo text-white shadow-lg sticky top-0 z-40">
+    <nav class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2 font-extrabold text-xl">
+          <span class="text-2xl">🤖</span>
+          <span>{{ app_name }}</span>
+        </a>
+        <!-- Menu desktop -->
+        <div class="hidden lg:flex items-center gap-1 text-sm font-semibold">
+          {% for item in nav_items %}
+          <a href="{{ item.href }}"
+             class="px-3 py-2 rounded-lg hover:bg-white/20 transition-colors">{{ item.titulo }}</a>
+          {% endfor %}
+        </div>
+        <!-- Botão mobile -->
+        <button id="menu-btn"
+                class="lg:hidden p-2 rounded-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+                aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <!-- Menu mobile -->
+      <div id="mobile-menu" class="hidden lg:hidden pb-4">
+        <div class="flex flex-col gap-1 text-sm font-semibold">
+          {% for item in nav_items %}
+          <a href="{{ item.href }}"
+             class="px-3 py-2 rounded-lg hover:bg-white/20 transition-colors flex items-center gap-2">
+            <span>{{ item.icone }}</span> {{ item.titulo }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="flex-1 w-full">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-slate-900 text-slate-300 mt-12">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-center text-sm">
+      <p class="font-bold text-white text-base mb-1">🤖 {{ app_name }}</p>
+      <p class="mb-3">{{ slogan }}</p>
+      <p class="text-slate-400">
+        Projeto de Extensão Universitária • Educação em Inteligência Artificial •
+        <a href="/sobre" class="underline hover:text-white">Sobre o projeto</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

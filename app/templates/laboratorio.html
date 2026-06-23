@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Laboratório de Prompts — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">🧪</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Laboratório de Prompts</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Escreva um prompt e descubra na hora o quão bom ele é. Receba uma nota, dicas e uma versão melhorada!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-4 py-12">
+  <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+    <label for="prompt-input" class="block font-bold text-slate-700 mb-2">
+      Digite o seu prompt:
+    </label>
+    <textarea id="prompt-input" rows="4"
+      class="w-full rounded-xl border-2 border-slate-200 focus:border-marca-roxo focus:ring-marca-roxo p-3 text-slate-800 resize-y"
+      placeholder="Ex.: Explique o que é fotossíntese para um aluno de 11 anos, em 4 tópicos simples."></textarea>
+
+    <div class="flex flex-wrap gap-3 mt-4">
+      <button id="analisar-btn"
+        class="bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">
+        🔍 Analisar meu prompt
+      </button>
+      <button id="exemplo-btn"
+        class="bg-slate-100 text-slate-700 font-bold px-6 py-3 rounded-full hover:bg-slate-200 transition-colors">
+        ✨ Usar um exemplo
+      </button>
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  <div id="resultado" class="hidden mt-8">
+    <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+      <!-- Nota e nível -->
+      <div class="text-center mb-6">
+        <div class="text-sm font-bold text-slate-400 uppercase tracking-wide">Sua pontuação</div>
+        <div class="text-6xl font-extrabold" id="score-num">0</div>
+        <div class="inline-block mt-2 px-4 py-1 rounded-full font-bold text-white" id="level-badge">—</div>
+        <!-- Barra -->
+        <div class="w-full bg-slate-200 rounded-full h-4 mt-4 overflow-hidden">
+          <div id="score-bar" class="h-4 rounded-full transition-all duration-700" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Pontos fortes -->
+      <div class="mb-5">
+        <h3 class="font-extrabold text-green-700 flex items-center gap-2 mb-2">✅ Pontos fortes</h3>
+        <ul id="strengths" class="space-y-1 text-slate-700 text-sm"></ul>
+      </div>
+
+      <!-- Melhorias -->
+      <div class="mb-5">
+        <h3 class="font-extrabold text-amber-600 flex items-center gap-2 mb-2">💡 Como melhorar</h3>
+        <ul id="improvements" class="space-y-1 text-slate-700 text-sm"></ul>
+      </div>
+
+      <!-- Sugestão -->
+      <div>
+        <h3 class="font-extrabold text-marca-roxo flex items-center gap-2 mb-2">⭐ Versão melhorada</h3>
+        <p id="suggested" class="bg-marca-azul/5 text-slate-700 rounded-xl p-4 text-sm"></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/laboratorio.js"></script>
+{% endblock %}

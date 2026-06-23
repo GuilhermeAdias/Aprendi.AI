@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Segurança e uso responsável — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">🛡️</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Segurança e uso responsável</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      A IA é uma ferramenta incrível, mas precisamos usá-la com cuidado e inteligência. Veja as regras de ouro!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
+    {% set secoes = [
+      {"icone": "🔒", "titulo": "Não compartilhe dados pessoais", "texto": "Nunca informe seu nome completo, endereço, telefone, escola ou senhas para uma IA. Esses dados são só seus!"},
+      {"icone": "⚠️", "titulo": "A IA pode errar", "texto": "A IA às vezes dá respostas erradas ou inventadas. Ela é uma ajudante, não uma dona da verdade."},
+      {"icone": "🔎", "titulo": "Verifique as informações", "texto": "Antes de acreditar ou compartilhar, confira em fontes confiáveis, como livros, professores e sites sérios."},
+      {"icone": "📰", "titulo": "Cuidado com fake news", "texto": "A IA pode criar textos e imagens falsas muito convincentes. Desconfie de notícias muito chocantes."},
+      {"icone": "🤝", "titulo": "Uso responsável", "texto": "Use a IA para aprender e criar, não para colar ou enganar. O aprendizado de verdade é seu maior poder."}
+    ] %}
+    {% for s in secoes %}
+    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100 flex gap-4 items-start">
+      <div class="text-4xl shrink-0">{{ s.icone }}</div>
+      <div>
+        <h2 class="font-extrabold text-lg text-slate-800 mb-1">{{ s.titulo }}</h2>
+        <p class="text-slate-600 text-sm leading-relaxed">{{ s.texto }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Combinados -->
+  <div class="bg-gradient-to-r from-marca-roxo to-marca-azul rounded-3xl text-white p-8">
+    <h2 class="text-2xl font-extrabold mb-5 text-center">📜 Combinados para usar IA do jeito certo</h2>
+    <ul class="space-y-3 max-w-xl mx-auto">
+      {% set combinados = [
+        "Eu protejo os meus dados pessoais.",
+        "Eu sempre confiro as informações importantes.",
+        "Eu uso a IA para aprender, não para colar.",
+        "Eu penso com a minha própria cabeça.",
+        "Eu trato a IA como uma ajudante, e não como uma mágica que sabe tudo.",
+        "Eu peço ajuda a um adulto quando tenho dúvidas."
+      ] %}
+      {% for c in combinados %}
+      <li class="flex items-center gap-3 bg-white/15 rounded-xl px-4 py-3">
+        <span class="text-xl">✅</span>
+        <span class="font-semibold">{{ c }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="text-center mt-10">
+    <a href="/quiz"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Testar meus conhecimentos no Quiz ❓
+    </a>
+  </div>
+</div>
+{% endblock %}

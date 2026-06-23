@@ -1,0 +1,64 @@
+/* Estilos complementares ao Tailwind (carregado via CDN). */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Acessibilidade: foco visível em elementos interativos. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #a855f7;
+  outline-offset: 2px;
+}
+
+/* Classe utilitária para esconder visualmente, mantendo acessível a leitores de tela. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animação suave de entrada para resultados e feedbacks. */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animar-entrada {
+  animation: aparecer 0.4s ease-out;
+}
+
+/* Animação de "pulo" para destacar conquistas (ex.: ganhar XP). */
+@keyframes pulinho {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.animar-pulo {
+  animation: pulinho 0.4s ease-in-out;
+}
+
+/* Respeita a preferência de redução de movimento. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animar-entrada,
+  .animar-pulo {
+    animation: none;
+  }
+}

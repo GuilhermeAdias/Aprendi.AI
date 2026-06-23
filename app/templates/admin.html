@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Painel de Resultados — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-slate-800 text-white">
+  <div class="max-w-5xl mx-auto px-4 py-10 text-center">
+    <div class="text-5xl mb-3">📊</div>
+    <h1 class="text-3xl font-extrabold mb-2">Painel de Resultados</h1>
+    <p class="text-slate-300">Resultados consolidados das avaliações, quizzes e partidas do jogo.</p>
+  </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-4 py-10">
+  <!-- Aviso de segurança -->
+  <div class="bg-amber-50 border-2 border-amber-300 text-amber-800 rounded-2xl p-4 mb-8 flex items-start gap-3">
+    <span class="text-2xl">⚠️</span>
+    <p class="text-sm font-semibold">
+      Em produção esta área deve ser protegida por autenticação. Aqui ela está aberta apenas para fins
+      acadêmicos e de demonstração.
+    </p>
+  </div>
+
+  <!-- Cartões de totais -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+    <div class="bg-white rounded-2xl shadow-md p-6 text-center border border-slate-100">
+      <div class="text-4xl font-extrabold text-marca-roxo">{{ report.evaluation.total }}</div>
+      <div class="text-sm font-bold text-slate-500 mt-1">Avaliações recebidas</div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-md p-6 text-center border border-slate-100">
+      <div class="text-4xl font-extrabold text-marca-azul">{{ report.quiz.total }}</div>
+      <div class="text-sm font-bold text-slate-500 mt-1">Quizzes respondidos</div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-md p-6 text-center border border-slate-100">
+      <div class="text-4xl font-extrabold text-marca-roxoclaro">{{ report.game.total }}</div>
+      <div class="text-sm font-bold text-slate-500 mt-1">Partidas do jogo</div>
+    </div>
+  </div>
+
+  <!-- Médias da avaliação -->
+  <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100 mb-8">
+    <h2 class="font-extrabold text-xl text-slate-800 mb-1">⭐ Avaliação (médias de 1 a 5)</h2>
+    <p class="text-sm text-slate-500 mb-5">Média geral de satisfação:
+      <strong class="text-marca-roxo">{{ report.evaluation.overall_average }}</strong> / 5</p>
+    {% if report.evaluation.total == 0 %}
+    <p class="text-slate-400 italic">Nenhuma avaliação recebida ainda.</p>
+    {% else %}
+    <div class="space-y-4">
+      {% for a in report.evaluation.averages %}
+      <div>
+        <div class="flex justify-between text-sm font-semibold text-slate-700 mb-1">
+          <span>{{ a.label }}</span>
+          <span class="text-marca-roxo">{{ a.average }} / 5</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+          <div class="h-3 bg-gradient-to-r from-marca-azul to-marca-roxo rounded-full"
+               style="width: {{ (a.average / 5 * 100) | round(1) }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Médias quiz e jogo -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+      <h2 class="font-extrabold text-lg text-slate-800 mb-3">❓ Quiz</h2>
+      <p class="text-slate-600 text-sm mb-1">Média de acertos:
+        <strong class="text-marca-azul">{{ report.quiz.average_correct }}</strong></p>
+      <p class="text-slate-600 text-sm">Média de aproveitamento:
+        <strong class="text-marca-azul">{{ report.quiz.average_percent }}%</strong></p>
+    </div>
+    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+      <h2 class="font-extrabold text-lg text-slate-800 mb-3">🎮 Jogo dos Prompts</h2>
+      <p class="text-slate-600 text-sm mb-1">Média de aproveitamento:
+        <strong class="text-marca-roxo">{{ report.game.average_percent }}%</strong></p>
+      <p class="text-slate-600 text-sm">Média de XP:
+        <strong class="text-marca-roxo">{{ report.game.average_xp }}</strong></p>
+    </div>
+  </div>
+
+  <!-- Comentários -->
+  <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+    <h2 class="font-extrabold text-xl text-slate-800 mb-4">💬 Comentários ({{ report.evaluation.comments | length }})</h2>
+    {% if report.evaluation.comments %}
+    <ul class="space-y-3">
+      {% for c in report.evaluation.comments %}
+      <li class="bg-slate-50 rounded-xl p-4 text-slate-700 text-sm border border-slate-100">
+        "{{ c.texto }}"
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-slate-400 italic">Nenhum comentário ainda.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

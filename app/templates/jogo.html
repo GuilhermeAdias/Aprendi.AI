@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Jogo dos Prompts — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">🎮</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Jogo dos Prompts</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Cumpra {{ total }} missões escolhendo o melhor prompt. Cada acerto vale {{ xp_por_acerto }} XP!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <!-- HUD: progresso e XP -->
+  <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-4 mb-6">
+    <div class="flex items-center justify-between text-sm font-bold text-slate-600 mb-2">
+      <span id="progress-label">Missão 1 de {{ total }}</span>
+      <span class="text-marca-roxo">⚡ <span id="xp-label">0</span> / {{ max_xp }} XP</span>
+    </div>
+    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+      <div id="progress-bar" class="h-3 bg-gradient-to-r from-marca-azul to-marca-roxo rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Área da missão -->
+  <div id="mission-area" class="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+    <h2 id="mission-title" class="font-extrabold text-xl text-slate-800 mb-2"></h2>
+    <p id="mission-desc" class="text-slate-600 mb-5"></p>
+    <div id="mission-options" class="space-y-3"></div>
+
+    <!-- Feedback -->
+    <div id="mission-feedback" class="hidden mt-5 rounded-xl p-4 text-sm"></div>
+
+    <button id="next-btn"
+      class="hidden mt-5 w-full bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">
+      Próxima missão ➡️
+    </button>
+  </div>
+
+  <!-- Tela final -->
+  <div id="final-area" class="hidden bg-white rounded-2xl shadow-md border border-slate-100 p-8 text-center">
+    <div class="text-6xl mb-3" id="final-emoji">🏆</div>
+    <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Missões concluídas!</h2>
+    <p class="text-slate-600 mb-4" id="final-message"></p>
+    <div class="flex items-center justify-center gap-6 mb-6">
+      <div>
+        <div class="text-4xl font-extrabold text-marca-roxo" id="final-correct">0</div>
+        <div class="text-xs font-bold text-slate-400 uppercase">Acertos</div>
+      </div>
+      <div>
+        <div class="text-4xl font-extrabold text-marca-azul" id="final-xp">0</div>
+        <div class="text-xs font-bold text-slate-400 uppercase">XP</div>
+      </div>
+    </div>
+    <div id="badges" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+    <div class="flex flex-wrap justify-center gap-3">
+      <button id="restart-btn"
+        class="bg-slate-100 text-slate-700 font-bold px-6 py-3 rounded-full hover:bg-slate-200 transition-colors">
+        🔁 Jogar de novo
+      </button>
+      <a href="/quiz"
+        class="bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow hover:scale-105 transition-transform">
+        Ir para o Quiz ❓
+      </a>
+    </div>
+  </div>
+</div>
+
+<script id="missions-data" type="application/json">{{ missions | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/jogo.js"></script>
+{% endblock %}

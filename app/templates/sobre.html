@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Sobre — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">ℹ️</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Sobre o {{ app_name }}</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">{{ slogan }}</p>
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-4 py-12 space-y-6">
+  {% set blocos = [
+    {"icone": "🎯", "titulo": "O projeto", "texto": "O Aprendi.AI é uma aplicação web educativa que ensina Inteligência Artificial de forma simples, interativa e gamificada. A proposta nasceu da percepção de que crianças e adolescentes usam IA todos os dias, mas nem sempre entendem como ela funciona ou como usá-la com segurança."},
+    {"icone": "🚀", "titulo": "Objetivo", "texto": "Aproximar a Inteligência Artificial da realidade dos jovens, explicando sua história, seu funcionamento, seus usos no dia a dia, boas práticas de criação de prompts, ética e segurança digital — sempre estimulando o pensamento crítico."},
+    {"icone": "👧🧑", "titulo": "Público", "texto": "Crianças e adolescentes de 10 a 17 anos (Ensino Fundamental II e Ensino Médio). A linguagem, os exemplos e o visual foram pensados para essa faixa etária."},
+    {"icone": "🛠️", "titulo": "Tecnologias", "texto": "Backend em Python com FastAPI e templates Jinja2; frontend com HTML, Tailwind CSS e JavaScript puro; persistência em arquivos JSON (sem banco de dados). O código segue boas práticas de Clean Code e separação em camadas (rotas, serviços, dados e armazenamento)."},
+    {"icone": "🎓", "titulo": "Extensão universitária", "texto": "Este é um projeto de extensão acadêmica, que conecta o conhecimento da disciplina 'Inteligência Artificial para Devs' a uma ação de impacto social: levar educação em IA para a comunidade escolar."}
+  ] %}
+  {% for b in blocos %}
+  <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100 flex gap-4 items-start">
+    <div class="text-4xl shrink-0">{{ b.icone }}</div>
+    <div>
+      <h2 class="font-extrabold text-xl text-slate-800 mb-1">{{ b.titulo }}</h2>
+      <p class="text-slate-600 leading-relaxed">{{ b.texto }}</p>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+    <h2 class="font-extrabold text-xl text-slate-800 mb-3">🧩 Tecnologias usadas</h2>
+    <div class="flex flex-wrap gap-2">
+      {% for tech in ["Python", "FastAPI", "Jinja2", "Tailwind CSS", "JavaScript", "JSON Storage", "HTML5"] %}
+      <span class="bg-marca-azul/10 text-marca-azul font-bold text-sm px-3 py-1 rounded-full">{{ tech }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="text-center pt-2">
+    <a href="/avaliacao"
+       class="inline-block bg-marca-roxo text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+      Deixe sua avaliação ⭐
+    </a>
+  </div>
+</div>
+{% endblock %}
