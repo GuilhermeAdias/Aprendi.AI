@@ -161,32 +161,6 @@ Aprendi.AI/
 
 ---
 
-## 🎓 Como apresentar na extensão
-
-1. **Abertura (5 min):** explique o problema — jovens usam IA, mas nem sempre entendem ou usam com segurança.
-2. **Demonstração guiada (15 min):** navegue pela trilha — História → Como funciona → IA no dia a dia → Guia de Prompts.
-3. **Mão na massa (15 min):** deixe os participantes usarem o **Laboratório de Prompts**, o **Jogo** e o **Quiz**.
-4. **Conversa sobre segurança (5 min):** use a página `/seguranca` e os "Combinados para usar IA do jeito certo".
-5. **Avaliação (5 min):** peça que respondam o questionário em `/avaliacao`.
-6. **Resultados:** mostre o painel `/admin/resultados` com as médias e comentários.
-
-> Dica: rode em um notebook conectado a um projetor e deixe os celulares dos alunos acessarem
-> a mesma rede para usarem a aplicação ao mesmo tempo (o layout é *mobile first*).
-
----
-
-## 🧾 Evidências necessárias
-
-Veja o checklist completo em [`docs/evidencias.md`](docs/evidencias.md). Em resumo:
-
-- Registro da conversa com a instituição parceira;
-- Prints da aplicação (desktop e mobile);
-- Foto/registro da apresentação;
-- Questionário aplicado e resultados (painel `/admin/resultados`);
-- Link deste repositório no GitHub.
-
----
-
 ## 🔒 Privacidade e segurança
 
 - **Sem login** e **sem coleta de dados pessoais**.
