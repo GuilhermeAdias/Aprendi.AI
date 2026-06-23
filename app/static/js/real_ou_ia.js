@@ -14,6 +14,7 @@
   const bar = document.getElementById("ra-bar");
   const card = document.getElementById("ra-card");
   const conteudo = document.getElementById("ra-conteudo");
+  const ilustracao = document.getElementById("ra-ilustracao");
   const humanoBtn = document.getElementById("ra-humano-btn");
   const iaBtn = document.getElementById("ra-ia-btn");
   const feedback = document.getElementById("ra-feedback");
@@ -46,6 +47,7 @@
     respondida = false;
     const item = ordem[indice];
     conteudo.textContent = item.conteudo;
+    if (ilustracao && item.ilustracao) ilustracao.textContent = item.ilustracao;
     feedback.classList.add("hidden");
     nextBtn.classList.add("hidden");
     [humanoBtn, iaBtn].forEach(function (b) {

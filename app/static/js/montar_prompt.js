@@ -24,7 +24,16 @@
   let indice = 0;
   let xpTotal = 0;
   let escolhas = {}; // categoriaIndex -> opcaoIndex
+  let categoriasAtuais = []; // categorias do desafio atual com opções embaralhadas
   const maxXp = DESAFIOS.reduce((acc, d) => acc + d.categorias.length * XP, 0);
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
   function updateHUD() {
     progress.textContent = "Desafio " + (indice + 1) + " de " + DESAFIOS.length;
@@ -35,13 +44,22 @@
   function render() {
     escolhas = {};
     const d = DESAFIOS[indice];
+    // Cria uma cópia das categorias com as opções embaralhadas, para que a
+    // opção correta não fique sempre na mesma posição.
+    categoriasAtuais = d.categorias.map(function (cat) {
+      return {
+        nome: cat.nome,
+        icone: cat.icone,
+        opcoes: shuffle(cat.opcoes.slice()),
+      };
+    });
     cenario.textContent = " " + d.cenario;
     resultado.classList.add("hidden");
     montarBtn.classList.remove("hidden");
     montarBtn.disabled = true;
     categoriasEl.innerHTML = "";
 
-    d.categorias.forEach(function (cat, ci) {
+    categoriasAtuais.forEach(function (cat, ci) {
       const wrap = document.createElement("div");
       const titulo = document.createElement("div");
       titulo.className = "font-bold text-slate-700 mb-2 flex items-center gap-2";
@@ -79,17 +97,15 @@
     btn.classList.remove("border-slate-200");
     btn.classList.add("border-marca-roxo", "bg-marca-roxo/10", "font-bold");
     // Habilita o botão quando todas as categorias têm escolha.
-    const total = DESAFIOS[indice].categorias.length;
-    montarBtn.disabled = Object.keys(escolhas).length < total;
+    montarBtn.disabled = Object.keys(escolhas).length < categoriasAtuais.length;
   }
 
   function montar() {
-    const d = DESAFIOS[indice];
     let acertos = 0;
     const partes = [];
     const botoes = categoriasEl.querySelectorAll(".opt-btn");
 
-    d.categorias.forEach(function (cat, ci) {
+    categoriasAtuais.forEach(function (cat, ci) {
       const escolhida = escolhas[ci];
       partes.push(cat.opcoes[escolhida].texto);
       if (cat.opcoes[escolhida].bom) acertos += 1;
@@ -115,13 +131,13 @@
 
     promptFinal.textContent = '"' + partes.join(" ") + '"';
     feedback.classList.remove("text-green-700", "text-amber-600");
-    if (acertos === d.categorias.length) {
+    if (acertos === categoriasAtuais.length) {
       feedback.classList.add("text-green-700");
       feedback.textContent = "✅ Perfeito! Todos os blocos certos! +" + ganho + " XP";
     } else {
       feedback.classList.add("text-amber-600");
       feedback.textContent =
-        "👍 Você acertou " + acertos + " de " + d.categorias.length + " blocos. +" + ganho + " XP. Os melhores estão em verde!";
+        "👍 Você acertou " + acertos + " de " + categoriasAtuais.length + " blocos. +" + ganho + " XP. Os melhores estão em verde!";
     }
 
     montarBtn.classList.add("hidden");

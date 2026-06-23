@@ -51,6 +51,7 @@
   let xpTotal = 0;
   let estrelasTotal = 0;
   let respondida = false;
+  let currentQ = null; // questão atual já com alternativas embaralhadas
   const acertosPorMissao = [];
   const estrelasPorMissao = [];
 
@@ -60,6 +61,21 @@
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+  }
+
+  // Embaralha as alternativas e recalcula o índice da resposta correta,
+  // para que a posição da resposta certa mude a cada exibição.
+  function shuffleOptions(q) {
+    const itens = q.alternativas.map(function (texto, i) {
+      return { texto: texto, correta: i === q.correta };
+    });
+    shuffle(itens);
+    return {
+      pergunta: q.pergunta,
+      explicacao: q.explicacao,
+      alternativas: itens.map(function (x) { return x.texto; }),
+      correta: itens.findIndex(function (x) { return x.correta; }),
+    };
   }
 
   function pickQuestions(mission, dif, k) {
@@ -151,7 +167,8 @@
   function renderQuestion() {
     respondida = false;
     const m = partida[mIndex];
-    const q = m.questoes[qIndex];
+    currentQ = shuffleOptions(m.questoes[qIndex]);
+    const q = currentQ;
     qMissionTag.textContent = "Missão " + (mIndex + 1) + " • " + m.meta.tema;
     qCounter.textContent = "Pergunta " + (qIndex + 1) + "/" + m.questoes.length;
     qText.textContent = q.pergunta;
@@ -178,7 +195,7 @@
     if (respondida) return;
     respondida = true;
     const m = partida[mIndex];
-    const q = m.questoes[qIndex];
+    const q = currentQ;
     const correto = escolhido === q.correta;
     const botoes = qOptions.querySelectorAll("button");
 

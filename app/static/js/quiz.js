@@ -20,6 +20,29 @@
   let indice = 0;
   let acertos = 0;
   let respondida = false;
+  let currentQ = null; // pergunta atual já com alternativas embaralhadas
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Embaralha as alternativas e recalcula o índice da correta.
+  function shuffleOptions(q) {
+    const itens = q.alternativas.map(function (texto, i) {
+      return { texto: texto, correta: i === q.correta };
+    });
+    shuffle(itens);
+    return {
+      pergunta: q.pergunta,
+      explicacao: q.explicacao,
+      alternativas: itens.map(function (x) { return x.texto; }),
+      correta: itens.findIndex(function (x) { return x.correta; }),
+    };
+  }
 
   function atualizarHUD() {
     progressLabel.textContent = "Pergunta " + (indice + 1) + " de " + questions.length;
@@ -29,7 +52,8 @@
 
   function render() {
     respondida = false;
-    const q = questions[indice];
+    currentQ = shuffleOptions(questions[indice]);
+    const q = currentQ;
     questionEl.textContent = q.pergunta;
     feedbackEl.classList.add("hidden");
     nextBtn.classList.add("hidden");
@@ -58,7 +82,7 @@
   function responder(escolhido) {
     if (respondida) return;
     respondida = true;
-    const q = questions[indice];
+    const q = currentQ;
     const correto = escolhido === q.correta;
     const botoes = optionsEl.querySelectorAll("button");
 
