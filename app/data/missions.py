@@ -1,151 +1,470 @@
-"""Missões do Jogo dos Prompts.
+"""Acervo de missões do Jogo dos Prompts.
 
-Cada missão apresenta um objetivo e três opções de prompt. O jogador deve
-escolher o melhor prompt. A resposta correta vem acompanhada de uma
-explicação educativa.
+O jogo tem 6 missões com complexidade crescente. Cada missão possui um acervo
+de 20 questões variadas (sobre IA, história, prompts, segurança e ética),
+classificadas em 3 dificuldades: ``facil``, ``medio`` e ``dificil``.
+
+A cada partida são sorteadas 5 questões por missão, de acordo com a dificuldade
+escolhida pelo jogador. Cada questão tem 3 alternativas.
+
+Pontuação:
+- O XP por acerto cresce a cada missão: 40, 50, 60, 70, 80 e 100.
+- Máximo por missão (5 acertos): 200, 250, 300, 350, 400 e 500.
+- Máximo total: 2000 XP. Meta mínima para vencer: 500 XP.
+- Estrelas por missão (estilo Angry Birds): 5 acertos = 3, 3-4 = 2, 1-2 = 1.
 """
 
 from __future__ import annotations
 
-# XP concedido por missão acertada.
-XP_POR_ACERTO = 100
+# Quantas questões são jogadas por missão em cada partida.
+QUESTOES_POR_MISSAO = 5
 
-MISSIONS: list[dict] = [
-    {
-        "id": 1,
-        "titulo": "Missão 1 — A lição de casa de Ciências",
-        "descricao": (
-            "Você precisa de ajuda para entender o ciclo da água para uma "
-            "prova. Qual prompt traz a melhor explicação?"
-        ),
-        "prompts": [
-            "água",
-            "fala do ciclo da agua",
-            (
-                "Explique o ciclo da água de forma simples para um estudante "
-                "de 11 anos, em 4 passos e com um exemplo do dia a dia."
-            ),
-        ],
-        "correta": 2,
-        "explicacao": (
-            "O melhor prompt tem objetivo (explicar), público (11 anos), "
-            "formato (4 passos) e ainda pede um exemplo. Quanto mais claro, "
-            "melhor a resposta da IA!"
-        ),
-    },
-    {
-        "id": 2,
-        "titulo": "Missão 2 — Uma história para dormir",
-        "descricao": (
-            "Você quer criar uma historinha para o seu irmão mais novo. Qual "
-            "prompt funciona melhor?"
-        ),
-        "prompts": [
-            (
-                "Crie uma história curta e calma, de até 8 linhas, sobre uma "
-                "estrela que tem medo do escuro. O público é uma criança de 6 "
-                "anos, com tom carinhoso."
-            ),
-            "historia",
-            "faz uma historia ai",
-        ],
-        "correta": 0,
-        "explicacao": (
-            "Esse prompt define objetivo (história), restrição (8 linhas), "
-            "tema (estrela com medo do escuro), público (6 anos) e tom "
-            "(carinhoso). Tudo o que a IA precisa para acertar!"
-        ),
-    },
-    {
-        "id": 3,
-        "titulo": "Missão 3 — Resumo do livro",
-        "descricao": (
-            "Você leu um capítulo e quer um resumo para revisar. Qual prompt "
-            "é o mais completo?"
-        ),
-        "prompts": [
-            "resume",
-            (
-                "Resuma o texto abaixo em 5 tópicos curtos, destacando as "
-                "ideias mais importantes, com linguagem simples. Texto: [colar "
-                "o texto aqui]."
-            ),
-            "faz um resumo grande",
-        ],
-        "correta": 1,
-        "explicacao": (
-            "O prompt vencedor diz o formato (5 tópicos), o objetivo (resumir "
-            "as ideias importantes), o tom (simples) e ainda mostra onde "
-            "colar o texto. Dar o material ajuda muito a IA."
-        ),
-    },
-    {
-        "id": 4,
-        "titulo": "Missão 4 — Treino de inglês",
-        "descricao": (
-            "Você quer praticar inglês com a IA. Qual prompt deixa o treino "
-            "mais útil?"
-        ),
-        "prompts": [
-            "ensina ingles",
-            "ingles",
-            (
-                "Quero praticar inglês básico. Faça 5 perguntas simples em "
-                "inglês, uma de cada vez, e corrija meus erros explicando em "
-                "português."
-            ),
-        ],
-        "correta": 2,
-        "explicacao": (
-            "Esse prompt define objetivo (praticar), formato (5 perguntas, "
-            "uma de cada vez), nível (básico) e restrição (correção em "
-            "português). Assim o treino fica organizado."
-        ),
-    },
-    {
-        "id": 5,
-        "titulo": "Missão 5 — Ideias para um projeto",
-        "descricao": (
-            "Você precisa de ideias para uma feira de ciências. Qual prompt "
-            "traz ideias mais úteis?"
-        ),
-        "prompts": [
-            (
-                "Sugira 5 ideias de projetos simples para uma feira de "
-                "ciências do 8º ano, usando materiais baratos. Para cada "
-                "ideia, escreva uma frase explicando o que ela demonstra."
-            ),
-            "ideias",
-            "me da umas ideias de projeto",
-        ],
-        "correta": 0,
-        "explicacao": (
-            "O melhor prompt tem objetivo (5 ideias), contexto (feira do 8º "
-            "ano), restrição (materiais baratos) e formato (uma explicação "
-            "por ideia). Quanto mais detalhe, melhores as ideias."
-        ),
-    },
-    {
-        "id": 6,
-        "titulo": "Missão 6 — Cuidado com a informação",
-        "descricao": (
-            "A IA pode errar. Qual prompt mostra que você usa a IA com "
-            "pensamento crítico?"
-        ),
-        "prompts": [
-            "me fala a verdade absoluta sobre tudo",
-            (
-                "Explique as principais causas da Segunda Guerra Mundial em 4 "
-                "tópicos e, no final, indique que eu devo confirmar as "
-                "informações em fontes confiáveis."
-            ),
-            "responde rapido sem pensar",
-        ],
-        "correta": 1,
-        "explicacao": (
-            "O prompt vencedor pede uma resposta organizada (4 tópicos) e "
-            "lembra de verificar as informações. Usar a IA com senso crítico "
-            "é uma das atitudes mais importantes!"
-        ),
-    },
+# XP concedido por acerto em cada missão (índice 0 = missão 1).
+XP_POR_MISSAO = [40, 50, 60, 70, 80, 100]
+
+# Metas de pontuação.
+XP_MINIMO_META = 500
+XP_MAXIMO = 2000
+
+# Dificuldades disponíveis (escolhidas antes de começar).
+DIFICULDADES = [
+    {"id": "facil", "nome": "Fácil", "icone": "🌱", "descricao": "Para começar a aprender."},
+    {"id": "medio", "nome": "Médio", "icone": "🚀", "descricao": "Para quem já manja um pouco."},
+    {"id": "dificil", "nome": "Difícil", "icone": "🔥", "descricao": "Para os experts em IA!"},
 ]
+
+
+def _q(pergunta, alternativas, correta, explicacao, dificuldade):
+    """Atalho para montar uma questão."""
+    return {
+        "pergunta": pergunta,
+        "alternativas": alternativas,
+        "correta": correta,
+        "explicacao": explicacao,
+        "dificuldade": dificuldade,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Missão 1 — O que é Inteligência Artificial (conceitos básicos)
+# ---------------------------------------------------------------------------
+MISSAO_1 = [
+    _q("O que é Inteligência Artificial?",
+       ["Programas que aprendem padrões para realizar tarefas", "Um robô com sentimentos", "Um tipo de celular"],
+       0, "IA são programas que aprendem padrões a partir de dados para fazer tarefas.", "facil"),
+    _q("A IA é uma pessoa de verdade?",
+       ["Sim, igualzinha", "Não, é um programa de computador", "Sim, mas invisível"],
+       1, "A IA não é uma pessoa: é um programa de computador.", "facil"),
+    _q("A IA consegue aprender?",
+       ["Sim, observando muitos exemplos", "Não, nunca muda", "Só se for um robô"],
+       0, "A IA aprende encontrando padrões em muitos exemplos (dados).", "facil"),
+    _q("Qual destes pode ter IA?",
+       ["Um assistente de voz", "Uma pedra", "Um lápis"],
+       0, "Assistentes de voz usam IA para entender o que você fala.", "facil"),
+    _q("A IA pode errar?",
+       ["Sim, ela pode errar", "Não, acerta sempre", "Só erra de noite"],
+       0, "A IA pode errar e até inventar coisas. Sempre confira!", "facil"),
+    _q("IA é uma forma de mágica?",
+       ["Não, é tecnologia e matemática", "Sim, é mágica", "Sim, é sorte"],
+       0, "Parece mágica, mas é tecnologia baseada em cálculos.", "facil"),
+    _q("Para aprender, a IA precisa de quê?",
+       ["De exemplos (dados)", "De comida", "De dormir"],
+       0, "Sem dados (exemplos), a IA não aprende nada.", "facil"),
+    _q("O que a IA faz com os padrões que aprende?",
+       ["Usa para fazer previsões e tarefas", "Joga fora", "Esconde de todos"],
+       0, "Ela usa os padrões para prever e resolver tarefas.", "medio"),
+    _q("Qual frase sobre IA está correta?",
+       ["IA imita algumas tarefas humanas", "IA é mais esperta que tudo sempre", "IA não usa computador"],
+       0, "A IA imita certas tarefas humanas, mas tem limites.", "medio"),
+    _q("Sigla 'IA' significa:",
+       ["Inteligência Artificial", "Internet Avançada", "Informação Automática"],
+       0, "IA = Inteligência Artificial.", "medio"),
+    _q("A IA entende o mundo como nós?",
+       ["Não, ela calcula probabilidades", "Sim, exatamente igual", "Sim, mas só cores"],
+       0, "Ela não entende como nós; calcula a resposta mais provável.", "medio"),
+    _q("Um programa que recomenda vídeos é:",
+       ["Um exemplo de IA", "Um tipo de TV", "Um jogo de tabuleiro"],
+       0, "Recomendar conteúdo é uma tarefa típica de IA.", "medio"),
+    _q("A IA tem opinião própria e vontade?",
+       ["Não, ela segue cálculos e dados", "Sim, decide sozinha o que quer", "Sim, tem desejos"],
+       0, "A IA não tem vontade própria; depende dos dados e instruções.", "medio"),
+    _q("Por que dizemos que a IA é 'artificial'?",
+       ["Porque foi criada por humanos", "Porque é falsa", "Porque é feita de plástico"],
+       0, "'Artificial' quer dizer que foi criada por pessoas.", "medio"),
+    _q("Se os dados de treino forem ruins, a IA:",
+       ["Pode aprender coisas erradas", "Fica perfeita", "Apaga sozinha"],
+       0, "Dados ruins levam a uma IA que aprende coisas erradas.", "dificil"),
+    _q("Qual afirmação é a mais precisa?",
+       ["IA reconhece padrões, mas não 'compreende' como humanos", "IA pensa exatamente como gente", "IA nunca depende de dados"],
+       0, "IA reconhece padrões; não compreende com consciência.", "dificil"),
+    _q("Uma IA treinada só com fotos de gatos vai:",
+       ["Ter dificuldade com o que nunca viu", "Saber tudo sobre cães", "Aprender a cozinhar"],
+       0, "Ela aprende sobre o que viu; o resto fica difícil.", "dificil"),
+    _q("O termo 'modelo' de IA significa:",
+       ["O programa treinado que faz as previsões", "Uma pessoa famosa", "Um molde de bolo"],
+       0, "'Modelo' é o programa já treinado que gera respostas.", "dificil"),
+    _q("IA e robô são a mesma coisa?",
+       ["Não: robô é o corpo, IA pode ser só software", "Sim, sempre", "Sim, robô é IA com pernas"],
+       0, "Nem toda IA é robô; muita IA é só software.", "dificil"),
+    _q("Por que a IA precisa de muitos exemplos?",
+       ["Para reconhecer padrões com mais confiança", "Para ocupar espaço", "Para enfeitar"],
+       0, "Mais exemplos bons = padrões mais confiáveis.", "dificil"),
+]
+
+# ---------------------------------------------------------------------------
+# Missão 2 — A História da IA
+# ---------------------------------------------------------------------------
+MISSAO_2 = [
+    _q("Quem imaginou a ideia de uma 'máquina pensante'?",
+       ["Alan Turing", "Albert Einstein", "Santos Dumont"],
+       0, "Alan Turing foi pioneiro na ideia de máquinas que calculam e 'pensam'.", "facil"),
+    _q("O 'Teste de Turing' serve para:",
+       ["Ver se a máquina parece humana ao conversar", "Medir a bateria", "Pesar o computador"],
+       0, "O teste avalia se a máquina parece humana numa conversa.", "facil"),
+    _q("A IA é uma ideia nova de hoje?",
+       ["Não, já é estudada há décadas", "Sim, nasceu este ano", "Sim, semana passada"],
+       0, "A IA é estudada desde os anos 1950.", "facil"),
+    _q("Um computador famoso venceu o campeão mundial de qual jogo?",
+       ["Xadrez", "Futebol", "Pega-pega"],
+       0, "O Deep Blue venceu o campeão de xadrez em 1997.", "facil"),
+    _q("IA generativa é a que:",
+       ["Cria conteúdos novos (textos, imagens)", "Só apaga arquivos", "Só liga a luz"],
+       0, "IA generativa cria conteúdo novo a partir do que aprendeu.", "facil"),
+    _q("Ferramentas como o ChatGPT ficaram famosas por:",
+       ["Conversar e ajudar em tarefas", "Fazer ligações", "Lavar roupa"],
+       0, "Elas popularizaram a IA que conversa e ajuda no dia a dia.", "facil"),
+    _q("O nome 'Inteligência Artificial' surgiu:",
+       ["Em uma reunião de cientistas (1956)", "Num filme de 2020", "Num jogo de videogame"],
+       0, "O termo nasceu na conferência de Dartmouth, em 1956.", "facil"),
+    _q("'Machine Learning' quer dizer:",
+       ["Aprendizado de máquina", "Máquina de lavar", "Aprender a dirigir"],
+       0, "Machine Learning = aprendizado de máquina a partir de dados.", "medio"),
+    _q("Em vez de programar cada regra, o Machine Learning:",
+       ["Mostra exemplos para a IA aprender", "Desliga o computador", "Usa só lápis e papel"],
+       0, "A IA aprende os padrões a partir de muitos exemplos.", "medio"),
+    _q("'Deep Learning' se inspira em quê?",
+       ["Em redes neurais, como o cérebro", "Em receitas de bolo", "Em mapas do tesouro"],
+       0, "Deep Learning usa redes neurais inspiradas no cérebro.", "medio"),
+    _q("O que ajudou a IA a evoluir muito nos últimos anos?",
+       ["Computadores potentes e muitos dados", "Menos energia", "Menos internet"],
+       0, "Mais poder de cálculo e mais dados impulsionaram a IA.", "medio"),
+    _q("O ELIZA, dos anos 1960, era:",
+       ["Um dos primeiros programas que 'conversavam'", "Um celular", "Um carro"],
+       0, "ELIZA foi um dos primeiros 'chatbots', com regras simples.", "medio"),
+    _q("A IA generativa de imagens consegue:",
+       ["Criar imagens novas a partir de texto", "Tirar foto sozinha do nada real", "Pintar paredes"],
+       0, "Ela gera imagens novas com base no que aprendeu.", "medio"),
+    _q("Por que o Teste de Turing é importante na história?",
+       ["Foi um jeito pioneiro de pensar a 'inteligência' das máquinas", "Mediu a velocidade da internet", "Criou o teclado"],
+       0, "Foi uma forma pioneira de discutir se máquinas 'pensam'.", "dificil"),
+    _q("Coloque em ordem: Machine Learning veio antes do Deep Learning?",
+       ["Sim, o Deep Learning é uma evolução posterior", "Não, são a mesma coisa", "Não, Deep Learning é mais antigo"],
+       0, "Deep Learning é um avanço dentro do Machine Learning.", "dificil"),
+    _q("A vitória no xadrez (1997) mostrou que máquinas podem:",
+       ["Superar humanos em tarefas específicas", "Sentir emoções", "Substituir professores"],
+       0, "Mostrou superioridade em tarefas bem específicas.", "dificil"),
+    _q("Por que a IA generativa foi um marco?",
+       ["Passou a criar conteúdo, não só classificar", "Passou a gastar menos pilha", "Deixou de usar dados"],
+       0, "Antes a IA classificava; a generativa passou a criar.", "dificil"),
+    _q("Redes neurais profundas ficaram viáveis principalmente por:",
+       ["Mais dados e mais poder de processamento", "Menos pesquisa", "Telas maiores"],
+       0, "Dados em massa e hardware potente viabilizaram o Deep Learning.", "dificil"),
+    _q("O que NÃO faz parte da história da IA?",
+       ["A invenção da roda", "O Teste de Turing", "O Deep Blue no xadrez"],
+       0, "A roda é muito anterior e não faz parte da história da IA.", "dificil"),
+    _q("Hoje a IA está presente principalmente:",
+       ["Em apps, buscas, vídeos e mapas do dia a dia", "Só em laboratórios secretos", "Só em filmes"],
+       0, "A IA já faz parte do cotidiano em vários aplicativos.", "dificil"),
+]
+
+# ---------------------------------------------------------------------------
+# Missão 3 — IA no dia a dia
+# ---------------------------------------------------------------------------
+MISSAO_3 = [
+    _q("Quando o YouTube recomenda um vídeo, ele usa:",
+       ["IA que aprende seus gostos", "Sorteio de papel", "Adivinhação mágica"],
+       0, "A IA analisa o que você assiste e recomenda parecidos.", "facil"),
+    _q("O Google Maps usa IA para:",
+       ["Achar a rota mais rápida", "Pintar as ruas", "Trocar o pneu"],
+       0, "Ele calcula rotas e prevê o trânsito com IA.", "facil"),
+    _q("Quando você fala com a Alexa ou Siri, a IA:",
+       ["Transforma sua voz em comando", "Liga para sua mãe", "Apaga a luz sempre"],
+       0, "Ela reconhece sua voz e tenta entender o pedido.", "facil"),
+    _q("O corretor automático do celular é:",
+       ["Um exemplo de IA", "Um joguinho", "Uma calculadora de troco"],
+       0, "Ele prevê e corrige palavras usando IA.", "facil"),
+    _q("Tradutores de idioma usam IA para:",
+       ["Entender e reescrever em outra língua", "Inventar palavras sem sentido", "Apagar o texto"],
+       0, "A IA entende uma língua e traduz para outra.", "facil"),
+    _q("A Netflix sugere filmes com base em:",
+       ["No que você já assistiu", "Na cor do sofá", "No dia da semana só"],
+       0, "A IA recomenda conforme seus gostos.", "facil"),
+    _q("Em alguns jogos, os inimigos do computador usam IA para:",
+       ["Reagir às suas jogadas", "Desligar a TV", "Pedir pizza"],
+       0, "A IA deixa os personagens mais espertos e desafiadores.", "facil"),
+    _q("Filtros de foto que reconhecem o rosto usam:",
+       ["Reconhecimento de imagem (IA)", "Cola e tesoura", "Sorte"],
+       0, "Eles usam IA para reconhecer rostos e aplicar efeitos.", "medio"),
+    _q("Por que sua página inicial de vídeos é diferente da de um amigo?",
+       ["A IA personaliza para cada pessoa", "É tudo igual sempre", "É escolhido por sorteio"],
+       0, "A recomendação é personalizada por IA.", "medio"),
+    _q("Caixas de e-mail separam spam usando:",
+       ["IA que reconhece mensagens suspeitas", "Um carteiro robô", "Uma régua"],
+       0, "A IA aprende a reconhecer padrões de spam.", "medio"),
+    _q("Assistentes de estudo com IA podem:",
+       ["Tirar dúvidas e explicar conteúdos", "Fazer a prova por você de verdade", "Garantir nota 10"],
+       0, "Ajudam a aprender, mas o esforço é seu!", "medio"),
+    _q("Quando um app sugere a próxima música, é a IA:",
+       ["Prevendo o que você vai curtir", "Tocando aleatório sempre", "Lendo sua mente"],
+       0, "Ela prevê pelo seu histórico de gostos.", "medio"),
+    _q("Câmeras que desfocam o fundo em chamadas usam:",
+       ["IA de reconhecimento de imagem", "Um pano na lente", "Tinta preta"],
+       0, "A IA separa a pessoa do fundo automaticamente.", "medio"),
+    _q("Por que sistemas de recomendação às vezes erram?",
+       ["Porque trabalham com probabilidades", "Porque têm preguiça", "Porque é de propósito"],
+       0, "São previsões; nem sempre acertam o seu gosto.", "dificil"),
+    _q("Um ponto de atenção das recomendações é:",
+       ["Podem te deixar numa 'bolha' de conteúdo parecido", "Sempre mostram tudo do mundo", "Nunca repetem temas"],
+       0, "Elas tendem a mostrar mais do mesmo, criando bolhas.", "dificil"),
+    _q("Reconhecimento de voz pode ter dificuldade com:",
+       ["Barulho e sotaques pouco vistos no treino", "Silêncio total", "Letras grandes"],
+       0, "Ruído e vozes diferentes do treino atrapalham.", "dificil"),
+    _q("O que esses exemplos têm em comum?",
+       ["Usam padrões aprendidos de dados", "Funcionam sem energia", "Não usam computador"],
+       0, "Todos aprendem padrões a partir de dados.", "dificil"),
+    _q("Assistentes virtuais guardam comandos para:",
+       ["Tentar melhorar as respostas (cuidado com privacidade)", "Vender seu lanche", "Nada, somem na hora"],
+       0, "Podem usar dados para melhorar — por isso, atenção à privacidade.", "dificil"),
+    _q("Qual é um uso responsável da IA nos estudos?",
+       ["Usar como apoio e conferir as respostas", "Copiar tudo sem ler", "Entregar como se fosse seu sem entender"],
+       0, "Use como apoio, sempre conferindo e aprendendo.", "dificil"),
+    _q("Se a IA recomenda algo perigoso ou estranho, você deve:",
+       ["Desconfiar e falar com um adulto", "Obedecer sem pensar", "Compartilhar com todos"],
+       0, "Pensamento crítico: desconfie e peça ajuda a um adulto.", "dificil"),
+]
+
+# ---------------------------------------------------------------------------
+# Missão 4 — Criando bons prompts
+# ---------------------------------------------------------------------------
+MISSAO_4 = [
+    _q("O que é um 'prompt'?",
+       ["O pedido que você faz para a IA", "Um vírus", "Um botão de ligar"],
+       0, "Prompt é a instrução/pedido que você escreve para a IA.", "facil"),
+    _q("Quanto mais claro o prompt:",
+       ["Melhor tende a ser a resposta", "Pior fica tudo", "Tanto faz"],
+       0, "Prompts claros costumam gerar respostas melhores.", "facil"),
+    _q("Qual é o melhor pedido?",
+       ["Explique a fotossíntese em 3 tópicos simples", "fotossintese", "fala ai"],
+       0, "O primeiro tem objetivo e formato definidos.", "facil"),
+    _q("Dizer 'para uma criança de 10 anos' no prompt define:",
+       ["O público", "A cor", "O preço"],
+       0, "Isso define o público da resposta.", "facil"),
+    _q("Pedir 'em 5 tópicos' define:",
+       ["O formato da resposta", "O idioma", "O volume"],
+       0, "Você está escolhendo o formato.", "facil"),
+    _q("Começar com um verbo ('Explique', 'Crie') ajuda a definir:",
+       ["O objetivo", "A temperatura", "O dia"],
+       0, "O verbo deixa claro o objetivo do pedido.", "facil"),
+    _q("Um bom prompt pode pedir um 'tom', por exemplo:",
+       ["Divertido ou simples", "Molhado", "Quadrado"],
+       0, "O tom é o estilo da resposta (divertido, sério...).", "facil"),
+    _q("Qual ingrediente NÃO é de um bom prompt?",
+       ["A cor favorita do computador", "Objetivo", "Contexto"],
+       0, "Cor do computador não influencia; objetivo e contexto sim.", "medio"),
+    _q("Dar contexto significa:",
+       ["Contar a situação (ex.: 'sou do 7º ano')", "Falar bem baixinho", "Escrever em maiúsculas"],
+       0, "Contexto é explicar a situação para a IA.", "medio"),
+    _q("Por que evitar abreviações como 'vc' e 'pq' no prompt?",
+       ["Para a IA entender melhor", "Porque é proibido por lei", "Para gastar bateria"],
+       0, "Escrever por extenso melhora a compreensão.", "medio"),
+    _q("Qual destes é o prompt mais completo?",
+       ["Sou do 8º ano. Resuma este texto em 5 tópicos simples: ...", "resume", "faz um resumo grande"],
+       0, "Ele tem contexto, formato e objetivo claros.", "medio"),
+    _q("Colocar uma restrição como 'no máximo 5 linhas' serve para:",
+       ["Controlar o tamanho da resposta", "Mudar a fonte", "Aumentar o preço"],
+       0, "Restrições ajudam a controlar a resposta.", "medio"),
+    _q("Se a resposta veio confusa, uma boa atitude é:",
+       ["Refinar o prompt com mais detalhes", "Desistir para sempre", "Brigar com a tela"],
+       0, "Ajuste o prompt e tente de novo, com mais detalhes.", "medio"),
+    _q("Os '6 ingredientes' incluem objetivo, contexto, formato, público, tom e:",
+       ["Restrições", "Temperatura ambiente", "Cor do teclado"],
+       0, "O sexto é 'restrições' (limites do pedido).", "dificil"),
+    _q("Por que pedir 'passo a passo' costuma ajudar?",
+       ["Organiza a explicação e facilita entender", "Deixa a resposta secreta", "Apaga partes"],
+       0, "Passo a passo organiza e clareia a explicação.", "dificil"),
+    _q("Qual prompt mostra pensamento crítico?",
+       ["...e no final indique que devo conferir em fontes confiáveis", "me dê a verdade absoluta", "responda sem pensar"],
+       0, "Pedir para conferir fontes mostra senso crítico.", "dificil"),
+    _q("Dar um exemplo do que você quer no prompt:",
+       ["Ajuda a IA a entender o estilo esperado", "Atrapalha sempre", "É proibido"],
+       0, "Exemplos guiam a IA para o resultado desejado.", "dificil"),
+    _q("Prompt muito curto e vago costuma gerar:",
+       ["Respostas genéricas e pouco úteis", "Sempre a melhor resposta", "Erro fatal no PC"],
+       0, "Pouca informação leva a respostas genéricas.", "dificil"),
+    _q("Qual é a melhor forma de melhorar com prompts?",
+       ["Praticar, testar e ajustar", "Nunca tentar", "Copiar de outro sem entender"],
+       0, "Praticar e ajustar é o caminho para evoluir.", "dificil"),
+    _q("Pedir a resposta 'em uma tabela' é definir:",
+       ["O formato", "O sabor", "A marca"],
+       0, "Tabela é um formato de resposta.", "dificil"),
+]
+
+# ---------------------------------------------------------------------------
+# Missão 5 — Segurança, privacidade e ética
+# ---------------------------------------------------------------------------
+MISSAO_5 = [
+    _q("Você deve dar sua senha para uma IA?",
+       ["Não, nunca", "Sim, sempre", "Só na segunda-feira"],
+       0, "Nunca compartilhe senhas ou dados pessoais.", "facil"),
+    _q("Se a IA der uma informação importante, você deve:",
+       ["Conferir em fontes confiáveis", "Acreditar sem pensar", "Espalhar na hora"],
+       0, "Sempre verifique informações importantes.", "facil"),
+    _q("A IA pode inventar fatos que parecem verdade?",
+       ["Sim, por isso confira", "Não, é impossível", "Só em feriados"],
+       0, "Ela pode 'alucinar' informações; confira sempre.", "facil"),
+    _q("Compartilhar seu endereço com a IA é:",
+       ["Uma má ideia", "Obrigatório", "Recomendado"],
+       0, "Endereço é dado pessoal: não compartilhe.", "facil"),
+    _q("Usar IA para colar na prova é:",
+       ["Uso errado e prejudica seu aprendizado", "Super recomendado", "Sinal de esperteza"],
+       0, "Colar prejudica seu aprendizado e não é honesto.", "facil"),
+    _q("Notícia muito chocante feita por IA pode ser:",
+       ["Fake news; desconfie", "Sempre verdade", "Sempre engraçada"],
+       0, "Desconfie de conteúdos chocantes; podem ser falsos.", "facil"),
+    _q("Se algo online te deixar desconfortável, o melhor é:",
+       ["Falar com um adulto de confiança", "Guardar segredo", "Continuar mesmo assim"],
+       0, "Procure um adulto de confiança.", "facil"),
+    _q("Dados pessoais são, por exemplo:",
+       ["Nome completo, endereço e telefone", "Cor preferida só", "Time de futebol só"],
+       0, "Nome, endereço e telefone são dados pessoais sensíveis.", "medio"),
+    _q("Por que verificar o que a IA diz?",
+       ["Porque ela pode errar ou inventar", "Porque ela mente de propósito", "Porque é lenta"],
+       0, "Ela pode errar; conferir evita repassar erros.", "medio"),
+    _q("Uso responsável da IA nos estudos é:",
+       ["Apoio para aprender, pensando junto", "Deixar ela fazer tudo", "Nunca estudar mais"],
+       0, "A IA é apoio; o aprendizado continua sendo seu.", "medio"),
+    _q("Imagens geradas por IA podem:",
+       ["Parecer reais sem serem", "Sempre ter marca d'água", "Nunca enganar ninguém"],
+       0, "Podem ser muito convincentes e falsas.", "medio"),
+    _q("Antes de compartilhar uma informação, é bom:",
+       ["Checar se é verdadeira", "Compartilhar e depois ver", "Nunca checar"],
+       0, "Cheque antes de compartilhar para não espalhar erro.", "medio"),
+    _q("Privacidade significa:",
+       ["Proteger suas informações pessoais", "Mostrar tudo para todos", "Falar alto"],
+       0, "Privacidade é cuidar dos seus dados.", "medio"),
+    _q("Ética no uso de IA inclui:",
+       ["Ser honesto e não enganar com ela", "Enganar pessoas", "Criar fake news"],
+       0, "Usar a IA com honestidade é agir com ética.", "dificil"),
+    _q("'Viés' (bias) na IA acontece quando:",
+       ["Ela aprende preconceitos dos dados", "Ela fica feliz", "Ela desliga"],
+       0, "Dados injustos podem ensinar preconceitos à IA.", "dificil"),
+    _q("Se uma IA pede dados pessoais sem necessidade, você:",
+       ["Não fornece e pede ajuda a um adulto", "Fornece tudo", "Inventa e manda"],
+       0, "Não forneça; converse com um adulto de confiança.", "dificil"),
+    _q("Por que pensamento crítico é importante com IA?",
+       ["Para não acreditar em tudo cegamente", "Para usar menos a internet", "Para digitar rápido"],
+       0, "Ajuda a avaliar e não cair em erros e fake news.", "dificil"),
+    _q("Conteúdo gerado por IA deveria, idealmente:",
+       ["Ser identificado como feito por IA", "Ser sempre escondido", "Nunca ser revisado"],
+       0, "Transparência: dizer quando algo foi feito por IA.", "dificil"),
+    _q("Qual é uma boa 'regra de ouro' com IA?",
+       ["Confiar, mas verificar", "Acreditar em tudo", "Ignorar adultos"],
+       0, "Confie como apoio, mas sempre verifique.", "dificil"),
+    _q("Depender demais da IA pode:",
+       ["Atrapalhar o desenvolvimento do seu raciocínio", "Deixar você mais inteligente sem estudar", "Não ter efeito nenhum"],
+       0, "O excesso pode enfraquecer seu próprio raciocínio.", "dificil"),
+]
+
+# ---------------------------------------------------------------------------
+# Missão 6 — Desafio final: pensamento crítico e IA avançada
+# ---------------------------------------------------------------------------
+MISSAO_6 = [
+    _q("A melhor forma de usar IA é:",
+       ["Como ferramenta de apoio, com senso crítico", "Como dona da verdade", "Sem pensar nunca"],
+       0, "IA é apoio; o senso crítico é seu.", "facil"),
+    _q("Quando a IA erra, a culpa é:",
+       ["Dela ter limites; cabe a nós conferir", "Sempre sua", "De ninguém, é mágica"],
+       0, "Ela tem limites; conferir é responsabilidade nossa.", "facil"),
+    _q("Pensar de forma crítica é:",
+       ["Avaliar antes de aceitar uma resposta", "Aceitar tudo rápido", "Nunca perguntar"],
+       0, "É avaliar e questionar antes de aceitar.", "facil"),
+    _q("Uma IA que cria textos pode ser usada para o bem quando:",
+       ["Ajuda a estudar e criar com responsabilidade", "Engana pessoas", "Espalha mentiras"],
+       0, "Para o bem: estudar e criar com responsabilidade.", "facil"),
+    _q("Se duas IAs dão respostas diferentes, o ideal é:",
+       ["Pesquisar e comparar com fontes confiáveis", "Escolher a mais bonita", "Acreditar nas duas"],
+       0, "Compare e cheque em fontes confiáveis.", "facil"),
+    _q("'Alucinação' da IA é quando ela:",
+       ["Inventa algo que parece verdade", "Fica com sono", "Vê fantasmas"],
+       0, "É quando a IA gera informação falsa convincente.", "medio"),
+    _q("Por que a IA não substitui um professor?",
+       ["Ela apoia, mas não tem o cuidado humano e o contexto", "Porque é lenta", "Porque não tem tela"],
+       0, "Falta o cuidado, a empatia e o contexto humano.", "medio"),
+    _q("Antes de usar uma resposta da IA num trabalho, você deve:",
+       ["Entender e verificar o conteúdo", "Copiar e colar sem ler", "Mudar só a cor"],
+       0, "Entenda e verifique antes de usar.", "medio"),
+    _q("Uma vantagem responsável da IA é:",
+       ["Acelerar ideias que você revisa depois", "Pensar por você para sempre", "Eliminar o estudo"],
+       0, "Ela acelera, mas a revisão é sua.", "medio"),
+    _q("Para identificar fake news, ajuda:",
+       ["Checar a fonte e procurar outras confiáveis", "Ver só o título", "Compartilhar primeiro"],
+       0, "Cheque a fonte e compare com fontes confiáveis.", "medio"),
+    _q("Se um conteúdo parece bom demais ou chocante demais:",
+       ["Desconfie e verifique", "Acredite na hora", "Repasse rápido"],
+       0, "Exageros pedem verificação.", "medio"),
+    _q("A IA é boa em tarefas específicas, mas:",
+       ["Não tem consciência nem entende o mundo como nós", "É melhor que humanos em tudo", "Sente emoções reais"],
+       0, "Ela não tem consciência; é boa em tarefas, com limites.", "medio"),
+    _q("Combinar IA + pensamento humano costuma:",
+       ["Dar os melhores resultados", "Ser sempre pior", "Não mudar nada"],
+       0, "IA como apoio + cabeça humana = melhores resultados.", "dificil"),
+    _q("Um risco de confiar cegamente na IA é:",
+       ["Espalhar erros e perder senso crítico", "Aprender mais sempre", "Ficar offline"],
+       0, "Confiança cega espalha erros e enfraquece o senso crítico.", "dificil"),
+    _q("Qual atitude é a mais madura ao usar IA?",
+       ["Usar como apoio, verificar e dar crédito honesto", "Esconder que usou e copiar", "Acreditar em tudo"],
+       0, "Apoiar-se, verificar e ser honesto é o mais maduro.", "dificil"),
+    _q("Por que aprender sobre IA agora é importante?",
+       ["Ela já faz parte do mundo e vai crescer", "Ela vai sumir logo", "Não muda nada"],
+       0, "A IA já é parte do mundo e tende a crescer.", "dificil"),
+    _q("Se você não sabe se algo foi feito por IA, o melhor é:",
+       ["Verificar e não tirar conclusões cedo demais", "Afirmar que é falso na hora", "Ignorar o tema"],
+       0, "Verifique antes de concluir.", "dificil"),
+    _q("A frase mais correta é:",
+       ["A IA é uma ferramenta poderosa que exige responsabilidade", "A IA resolve tudo sozinha", "A IA nunca erra"],
+       0, "Poderosa, sim — mas exige uso responsável.", "dificil"),
+    _q("Bons hábitos com IA incluem:",
+       ["Proteger dados, verificar e pensar por si", "Compartilhar senhas", "Acreditar em tudo"],
+       0, "Proteja dados, verifique e mantenha seu raciocínio.", "dificil"),
+    _q("Você terminou a jornada! O recado final é:",
+       ["Use a IA para aprender e criar, com responsabilidade", "Deixe a IA pensar por você", "Esqueça tudo o que aprendeu"],
+       0, "Use a IA como aliada do seu aprendizado, com responsabilidade!", "dificil"),
+]
+
+MISSOES_BASE = [
+    {"id": 1, "tema": "O que é IA", "icone": "🤔",
+     "titulo": "Missão 1 — O que é Inteligência Artificial?",
+     "descricao": "Os conceitos básicos para começar a entender a IA."},
+    {"id": 2, "tema": "História da IA", "icone": "📜",
+     "titulo": "Missão 2 — A História da IA",
+     "descricao": "De Alan Turing à IA generativa."},
+    {"id": 3, "tema": "IA no dia a dia", "icone": "🌍",
+     "titulo": "Missão 3 — IA no Dia a Dia",
+     "descricao": "Onde a IA já está na sua rotina."},
+    {"id": 4, "tema": "Prompts", "icone": "✍️",
+     "titulo": "Missão 4 — Criando Bons Prompts",
+     "descricao": "Como pedir as melhores respostas para a IA."},
+    {"id": 5, "tema": "Segurança e ética", "icone": "🛡️",
+     "titulo": "Missão 5 — Segurança, Privacidade e Ética",
+     "descricao": "Usando a IA com segurança e responsabilidade."},
+    {"id": 6, "tema": "Desafio final", "icone": "🏆",
+     "titulo": "Missão 6 — Desafio Final",
+     "descricao": "Pensamento crítico e o futuro da IA. A missão mais difícil!"},
+]
+
+_ACERVOS = [MISSAO_1, MISSAO_2, MISSAO_3, MISSAO_4, MISSAO_5, MISSAO_6]
+
+# Monta a lista final de missões, juntando metadados, acervo e XP por acerto.
+MISSIONS: list[dict] = []
+for _base, _acervo, _xp in zip(MISSOES_BASE, _ACERVOS, XP_POR_MISSAO):
+    MISSIONS.append({**_base, "xp_por_acerto": _xp, "questoes": _acervo})

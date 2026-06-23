@@ -1,0 +1,19 @@
+# Blueprint de deploy para o Render (https://render.com)
+# Publica o Aprendi.AI como um Web Service Python gratuito.
+#
+# Como usar:
+#   1. Faça push deste arquivo para o GitHub (já incluso no repositório).
+#   2. No Render, clique em "New +" > "Blueprint" e selecione este repositório.
+#   3. O Render lê este arquivo e cria o serviço automaticamente.
+services:
+  - type: web
+    name: aprendi-ai
+    runtime: python
+    plan: free
+    branch: develop-estacio
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+    autoDeploy: true

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Games — {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-marca-azul to-marca-roxo text-white">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="text-5xl mb-3">🎮</div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Central de Games</h1>
+    <p class="text-white/90 max-w-2xl mx-auto">
+      Escolha um jogo e aprenda Inteligência Artificial se divertindo!
+    </p>
+  </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for g in games %}
+    <a href="{{ g.href }}"
+       class="group bg-white rounded-2xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 hover:-translate-y-1 transition-all">
+      <div class="bg-gradient-to-br {{ g.cor }} h-28 flex items-center justify-center text-6xl">
+        {{ g.icone }}
+      </div>
+      <div class="p-5">
+        <h2 class="font-extrabold text-lg text-slate-800 group-hover:text-marca-roxo">{{ g.titulo }}</h2>
+        <p class="text-sm text-slate-500 mt-1">{{ g.descricao }}</p>
+        <span class="inline-block mt-3 text-marca-roxo font-bold text-sm">Jogar agora →</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-10">
+    <a href="/quiz"
+       class="inline-block bg-slate-100 text-slate-700 font-bold px-6 py-3 rounded-full hover:bg-slate-200 transition-colors">
+      Prefere um Quiz? ❓
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,76 +1,207 @@
-// Jogo dos Prompts: missões interativas com XP, progresso e badges.
+// Jogo dos Prompts: 6 missões com dificuldade, XP e estrelas (estilo Angry Birds).
 
 (function () {
   "use strict";
 
   const dataEl = document.getElementById("missions-data");
   if (!dataEl) return;
-  const missions = JSON.parse(dataEl.textContent);
-  const XP_POR_ACERTO = 100;
+  const MISSIONS = JSON.parse(dataEl.textContent);
+  const CFG = window.JOGO_CONFIG;
 
-  // Elementos do DOM.
-  const progressLabel = document.getElementById("progress-label");
+  // Telas
+  const startScreen = document.getElementById("start-screen");
+  const gameScreen = document.getElementById("game-screen");
+  const finalScreen = document.getElementById("final-screen");
+
+  // HUD
+  const missionLabel = document.getElementById("mission-label");
   const xpLabel = document.getElementById("xp-label");
-  const progressBar = document.getElementById("progress-bar");
-  const missionArea = document.getElementById("mission-area");
-  const missionTitle = document.getElementById("mission-title");
-  const missionDesc = document.getElementById("mission-desc");
-  const missionOptions = document.getElementById("mission-options");
-  const missionFeedback = document.getElementById("mission-feedback");
-  const nextBtn = document.getElementById("next-btn");
-  const finalArea = document.getElementById("final-area");
+  const xpBar = document.getElementById("xp-bar");
+  const starsTrack = document.getElementById("stars-track");
 
-  let indiceAtual = 0;
-  let acertos = 0;
-  let xp = 0;
+  // Banner da missão
+  const banner = document.getElementById("mission-banner");
+  const bannerIcon = document.getElementById("mission-banner-icon");
+  const bannerTitle = document.getElementById("mission-banner-title");
+  const bannerDesc = document.getElementById("mission-banner-desc");
+  const startMissionBtn = document.getElementById("start-mission-btn");
+
+  // Pergunta
+  const questionCard = document.getElementById("question-card");
+  const qMissionTag = document.getElementById("q-mission-tag");
+  const qCounter = document.getElementById("q-counter");
+  const qText = document.getElementById("q-text");
+  const qOptions = document.getElementById("q-options");
+  const qFeedback = document.getElementById("q-feedback");
+  const qNextBtn = document.getElementById("q-next-btn");
+
+  // Resumo da missão
+  const missionSummary = document.getElementById("mission-summary");
+  const summaryStars = document.getElementById("summary-stars");
+  const summaryCorrect = document.getElementById("summary-correct");
+  const summaryXp = document.getElementById("summary-xp");
+  const continueBtn = document.getElementById("continue-btn");
+
+  // Estado
+  let dificuldade = "facil";
+  let partida = []; // missões com 5 questões cada
+  let mIndex = 0;
+  let qIndex = 0;
+  let acertosMissao = 0;
+  let xpTotal = 0;
+  let estrelasTotal = 0;
   let respondida = false;
+  let currentQ = null; // questão atual já com alternativas embaralhadas
+  const acertosPorMissao = [];
+  const estrelasPorMissao = [];
 
-  function atualizarHUD() {
-    progressLabel.textContent = "Missão " + (indiceAtual + 1) + " de " + missions.length;
-    xpLabel.textContent = String(xp);
-    const pct = (indiceAtual / missions.length) * 100;
-    progressBar.style.width = pct + "%";
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
   }
 
-  function renderMissao() {
-    respondida = false;
-    const m = missions[indiceAtual];
-    missionTitle.textContent = m.titulo;
-    missionDesc.textContent = m.descricao;
-    missionFeedback.classList.add("hidden");
-    nextBtn.classList.add("hidden");
-    missionOptions.innerHTML = "";
+  // Embaralha as alternativas e recalcula o índice da resposta correta,
+  // para que a posição da resposta certa mude a cada exibição.
+  function shuffleOptions(q) {
+    const itens = q.alternativas.map(function (texto, i) {
+      return { texto: texto, correta: i === q.correta };
+    });
+    shuffle(itens);
+    return {
+      pergunta: q.pergunta,
+      explicacao: q.explicacao,
+      alternativas: itens.map(function (x) { return x.texto; }),
+      correta: itens.findIndex(function (x) { return x.correta; }),
+    };
+  }
 
-    m.prompts.forEach(function (texto, idx) {
+  function pickQuestions(mission, dif, k) {
+    const pool = shuffle(mission.questoes.filter((q) => q.dificuldade === dif));
+    const outras = shuffle(mission.questoes.filter((q) => q.dificuldade !== dif));
+    let sel = pool.slice(0, k);
+    if (sel.length < k) sel = sel.concat(outras.slice(0, k - sel.length));
+    return sel;
+  }
+
+  function starsForCorrect(c) {
+    if (c >= 5) return 3;
+    if (c >= 3) return 2;
+    if (c >= 1) return 1;
+    return 0;
+  }
+
+  function starString(n, max) {
+    let s = "";
+    for (let i = 0; i < max; i++) s += i < n ? "⭐" : "☆";
+    return s;
+  }
+
+  function startGame(dif) {
+    dificuldade = dif;
+    partida = MISSIONS.map((m) => ({
+      meta: m,
+      questoes: pickQuestions(m, dif, CFG.questoesPorMissao),
+    }));
+    mIndex = 0;
+    xpTotal = 0;
+    estrelasTotal = 0;
+    acertosPorMissao.length = 0;
+    estrelasPorMissao.length = 0;
+    startScreen.classList.add("hidden");
+    finalScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    renderStarsTrack();
+    updateHUD();
+    showBanner();
+  }
+
+  function renderStarsTrack() {
+    starsTrack.innerHTML = "";
+    partida.forEach(function (m, i) {
+      const span = document.createElement("span");
+      if (i < estrelasPorMissao.length) {
+        span.textContent = estrelasPorMissao[i] > 0 ? "⭐".repeat(estrelasPorMissao[i]) : "✖";
+        span.className = "px-1 font-bold";
+        span.style.color = estrelasPorMissao[i] > 0 ? "#f59e0b" : "#cbd5e1";
+      } else if (i === mIndex) {
+        span.textContent = "▶";
+        span.className = "px-1 text-marca-roxo";
+      } else {
+        span.textContent = "•";
+        span.className = "px-1 text-slate-300";
+      }
+      starsTrack.appendChild(span);
+    });
+  }
+
+  function updateHUD() {
+    missionLabel.textContent = "Missão " + (mIndex + 1) + " de " + partida.length;
+    xpLabel.textContent = String(xpTotal);
+    xpBar.style.width = Math.min(100, (xpTotal / CFG.maxXp) * 100) + "%";
+  }
+
+  function showBanner() {
+    const m = partida[mIndex].meta;
+    bannerIcon.textContent = m.icone;
+    bannerTitle.textContent = m.titulo;
+    bannerDesc.textContent = m.descricao;
+    banner.classList.remove("hidden");
+    questionCard.classList.add("hidden");
+    missionSummary.classList.add("hidden");
+    renderStarsTrack();
+    updateHUD();
+  }
+
+  function startMission() {
+    qIndex = 0;
+    acertosMissao = 0;
+    banner.classList.add("hidden");
+    missionSummary.classList.add("hidden");
+    questionCard.classList.remove("hidden");
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    respondida = false;
+    const m = partida[mIndex];
+    currentQ = shuffleOptions(m.questoes[qIndex]);
+    const q = currentQ;
+    qMissionTag.textContent = "Missão " + (mIndex + 1) + " • " + m.meta.tema;
+    qCounter.textContent = "Pergunta " + (qIndex + 1) + "/" + m.questoes.length;
+    qText.textContent = q.pergunta;
+    qFeedback.classList.add("hidden");
+    qNextBtn.classList.add("hidden");
+    qOptions.innerHTML = "";
+
+    q.alternativas.forEach(function (texto, idx) {
       const btn = document.createElement("button");
       btn.className =
         "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-marca-roxoclaro hover:bg-slate-50 transition-colors font-medium text-slate-700";
-      btn.innerHTML =
-        '<span class="font-bold text-marca-roxo mr-2">' +
-        String.fromCharCode(65 + idx) +
-        ")</span>";
+      btn.innerHTML = '<span class="font-bold text-marca-roxo mr-2">' + String.fromCharCode(65 + idx) + ")</span>";
       const span = document.createElement("span");
       span.textContent = texto;
       btn.appendChild(span);
       btn.addEventListener("click", function () {
-        responder(idx, btn);
+        answer(idx);
       });
-      missionOptions.appendChild(btn);
+      qOptions.appendChild(btn);
     });
-
-    atualizarHUD();
   }
 
-  function responder(escolhido, btn) {
+  function answer(escolhido) {
     if (respondida) return;
     respondida = true;
-    const m = missions[indiceAtual];
-    const correto = escolhido === m.correta;
-    const botoes = missionOptions.querySelectorAll("button");
+    const m = partida[mIndex];
+    const q = currentQ;
+    const correto = escolhido === q.correta;
+    const botoes = qOptions.querySelectorAll("button");
 
     botoes.forEach(function (b, idx) {
       b.disabled = true;
-      if (idx === m.correta) {
+      if (idx === q.correta) {
         b.classList.remove("border-slate-200");
         b.classList.add("border-green-500", "bg-green-50");
       } else if (idx === escolhido) {
@@ -80,113 +211,126 @@
     });
 
     if (correto) {
-      acertos += 1;
-      xp += XP_POR_ACERTO;
-      xpLabel.textContent = String(xp);
+      acertosMissao += 1;
+      xpTotal += m.meta.xp_por_acerto;
+      updateHUD();
       xpLabel.parentElement.classList.add("animar-pulo");
       setTimeout(function () {
         xpLabel.parentElement.classList.remove("animar-pulo");
       }, 400);
     }
 
-    missionFeedback.classList.remove("hidden", "bg-green-50", "bg-amber-50", "text-green-800", "text-amber-800");
+    qFeedback.classList.remove("hidden", "bg-green-50", "bg-amber-50", "text-green-800", "text-amber-800");
     if (correto) {
-      missionFeedback.classList.add("bg-green-50", "text-green-800");
-      missionFeedback.innerHTML = "<strong>✅ Acertou! +" + XP_POR_ACERTO + " XP</strong><br>" + m.explicacao;
+      qFeedback.classList.add("bg-green-50", "text-green-800");
+      qFeedback.innerHTML = "<strong>✅ Acertou! +" + m.meta.xp_por_acerto + " XP</strong><br>" + q.explicacao;
     } else {
-      missionFeedback.classList.add("bg-amber-50", "text-amber-800");
-      missionFeedback.innerHTML = "<strong>🤔 Quase!</strong> A melhor opção era a destacada em verde.<br>" + m.explicacao;
+      qFeedback.classList.add("bg-amber-50", "text-amber-800");
+      qFeedback.innerHTML = "<strong>🤔 Quase!</strong> A resposta certa está em verde.<br>" + q.explicacao;
     }
-    missionFeedback.classList.add("animar-entrada");
+    qFeedback.classList.add("animar-entrada");
 
-    nextBtn.textContent =
-      indiceAtual === missions.length - 1 ? "Ver resultado 🏁" : "Próxima missão ➡️";
-    nextBtn.classList.remove("hidden");
+    qNextBtn.textContent = qIndex === m.questoes.length - 1 ? "Concluir missão 🏁" : "Próxima ➡️";
+    qNextBtn.classList.remove("hidden");
   }
 
-  function avancar() {
-    if (indiceAtual < missions.length - 1) {
-      indiceAtual += 1;
-      renderMissao();
+  function nextQuestion() {
+    const m = partida[mIndex];
+    if (qIndex < m.questoes.length - 1) {
+      qIndex += 1;
+      renderQuestion();
     } else {
-      finalizar();
+      finishMission();
     }
   }
 
-  async function finalizar() {
-    progressBar.style.width = "100%";
-    progressLabel.textContent = "Concluído!";
-    missionArea.classList.add("hidden");
+  function finishMission() {
+    const estrelas = starsForCorrect(acertosMissao);
+    acertosPorMissao[mIndex] = acertosMissao;
+    estrelasPorMissao[mIndex] = estrelas;
+    estrelasTotal += estrelas;
 
-    const total = missions.length;
-    const percent = Math.round((acertos / total) * 100);
+    questionCard.classList.add("hidden");
+    summaryStars.textContent = starString(estrelas, 3);
+    summaryCorrect.textContent = String(acertosMissao);
+    summaryXp.textContent = String(acertosMissao * partida[mIndex].meta.xp_por_acerto);
+    missionSummary.classList.remove("hidden");
+    renderStarsTrack();
+  }
 
-    document.getElementById("final-correct").textContent = acertos + "/" + total;
-    document.getElementById("final-xp").textContent = String(xp);
+  function continueGame() {
+    if (mIndex < partida.length - 1) {
+      mIndex += 1;
+      showBanner();
+    } else {
+      finishGame();
+    }
+  }
 
-    let emoji = "🚀";
-    let msg = "Você começou a jornada! Revise o Guia de Prompts e tente de novo.";
-    if (percent >= 100) {
+  async function finishGame() {
+    gameScreen.classList.add("hidden");
+    finalScreen.classList.remove("hidden");
+    finalScreen.classList.add("animar-entrada");
+
+    document.getElementById("final-xp").textContent = String(xpTotal);
+    document.getElementById("final-stars").textContent = estrelasTotal + "/" + CFG.maxEstrelas;
+
+    let emoji = "🌱";
+    let msg = "Quase lá! Você precisa de " + CFG.meta + " XP para vencer. Tente de novo!";
+    if (xpTotal >= CFG.maxXp) {
       emoji = "🏆";
-      msg = "Incrível! Você é um verdadeiro Mestre dos Prompts!";
-    } else if (percent >= 70) {
+      msg = "PERFEITO! " + CFG.maxXp + " XP! Você é a lenda dos prompts!";
+    } else if (xpTotal >= 1500) {
       emoji = "🌟";
-      msg = "Muito bem! Você já cria prompts ótimos!";
-    } else if (percent >= 40) {
+      msg = "Incrível! Você dominou a Inteligência Artificial!";
+    } else if (xpTotal >= 1000) {
       emoji = "💪";
-      msg = "Bom trabalho! Continue praticando para evoluir.";
+      msg = "Muito bom! Você manda bem em IA!";
+    } else if (xpTotal >= CFG.meta) {
+      emoji = "🚀";
+      msg = "Boa! Você bateu a meta de " + CFG.meta + " XP! Continue evoluindo.";
     }
     document.getElementById("final-emoji").textContent = emoji;
     document.getElementById("final-message").textContent = msg;
 
-    renderBadges(acertos, percent);
+    const breakdown = document.getElementById("final-breakdown");
+    breakdown.innerHTML = "";
+    partida.forEach(function (m, i) {
+      const row = document.createElement("div");
+      row.className = "flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2 text-sm";
+      const nome = document.createElement("span");
+      nome.className = "text-slate-700 font-semibold";
+      nome.textContent = "Missão " + (i + 1) + " • " + m.meta.tema;
+      const est = document.createElement("span");
+      est.textContent = starString(estrelasPorMissao[i] || 0, 3);
+      row.appendChild(nome);
+      row.appendChild(est);
+      breakdown.appendChild(row);
+    });
 
-    finalArea.classList.remove("hidden");
-    finalArea.classList.add("animar-entrada");
-
-    // Persiste o resultado no backend.
     try {
       await fetch("/jogo/resultado", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correct: acertos }),
+        body: JSON.stringify({ acertos_por_missao: acertosPorMissao, dificuldade: dificuldade }),
       });
     } catch (e) {
-      // Falha de rede não deve atrapalhar a experiência do usuário.
+      // Falha de rede não atrapalha a experiência.
     }
   }
 
-  function renderBadges(acertos, percent) {
-    const badgesEl = document.getElementById("badges");
-    badgesEl.innerHTML = "";
-    const conquistas = [];
-    if (acertos >= 1) conquistas.push("🎯 Primeiro acerto");
-    if (acertos >= 3) conquistas.push("⭐ Meio caminho");
-    if (percent >= 100) conquistas.push("🏆 Tudo certo!");
-    if (percent >= 70) conquistas.push("🧠 Bom de prompt");
-    if (conquistas.length === 0) conquistas.push("🌱 Aprendiz");
-
-    conquistas.forEach(function (txt) {
-      const span = document.createElement("span");
-      span.className =
-        "bg-marca-roxo/10 text-marca-roxo font-bold text-sm px-3 py-1 rounded-full";
-      span.textContent = txt;
-      badgesEl.appendChild(span);
+  // Eventos
+  document.querySelectorAll(".dif-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      startGame(btn.getAttribute("data-dif"));
     });
-  }
-
-  function reiniciar() {
-    indiceAtual = 0;
-    acertos = 0;
-    xp = 0;
-    finalArea.classList.add("hidden");
-    missionArea.classList.remove("hidden");
-    renderMissao();
-    missionArea.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  nextBtn.addEventListener("click", avancar);
-  document.getElementById("restart-btn").addEventListener("click", reiniciar);
-
-  renderMissao();
+  });
+  startMissionBtn.addEventListener("click", startMission);
+  qNextBtn.addEventListener("click", nextQuestion);
+  continueBtn.addEventListener("click", continueGame);
+  document.getElementById("restart-btn").addEventListener("click", function () {
+    finalScreen.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    startScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 })();
